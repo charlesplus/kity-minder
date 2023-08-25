@@ -1,4 +1,4 @@
-FROM nodejs:8.11.1-alpine
+FROM node:8.11.1-alpine
 
 LABEL author="hm910705@163.com"
 
@@ -13,6 +13,6 @@ ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 
 WORKDIR /dist
 
-EXPOSE 7000
+EXPOSE 7001
 
 CMD ["node", "index.js"]
