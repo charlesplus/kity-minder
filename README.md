@@ -8,5 +8,5 @@ Online minder tools by kityminder-editor.
 * [x] Save/Delete Minder
 * [ ] Share
 * [x] My minder list
-* [ ] The trash list
+* [x] The trash list
 * [ ] My favorite list
