@@ -9,7 +9,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---创建思维导图表
+-- 创建思维导图表
 CREATE TABLE `mind` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID、主键自增',
   `userId` int(11) NOT NULL COMMENT '所有者ID',
