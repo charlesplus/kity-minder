@@ -68,14 +68,32 @@ const updateMinderData = async ctx => {
     // 找不到或者所有权不对
     return util.throwError('权限不足', 403);
   }
+  // 更新mind.mindData
+  const updateMindDataParams = {
+    id: minderId,
+    userId: user.id,
+    lastUpdateDate: Date.now(),
+    mindData: body.data || '',
+    version: minder.version
+  };
+  const changeCount = await db.executeNonQuery(MinderSqls.UPDATE_MINDER_DATA, updateMindDataParams);
+  if (!changeCount || changeCount !== 1) {
+    // 理论上需要更新一条, 否者就是系统bug了
+    return util.throwError('系统异常', 500);
+  }
+  // 保存快照
+  const updateVersion = minder.version + 1;
   const minderVersion = {
     mindId: minderId,
-    versionNo: util.buildVersionNO(user.id),
+    versionNo: String(updateVersion),
     saveDate: Date.now(),
     remark: '',
     mindData: body.data || ''
   };
-  await db.executeInsert(MinderSqls.INSERT_MINDER_VERSION, minderVersion);
+  // 每200次抽样保存一个快照
+  if (updateVersion % 200 === 0) {
+    db.executeInsert(MinderSqls.INSERT_MINDER_VERSION, minderVersion);
+  }
   ctx.status = 202;
   ctx.body = '';
 };
@@ -93,8 +111,20 @@ const getMinderListByUser = async ctx => {
 const getMinderDetail = async ctx => {
   const { user } = ctx.state;
   const { minderId } = ctx.params;
-  const sqlParams = { id: minderId, userId: user.id };
-  const minder = await db.executeScalar(MinderSqls.GET_MINDER_LATEST_DETAIL, sqlParams);
+  // 改为从mind表上查询
+  const sqlParams = {
+    id: minderId,
+    status: MinderStatus.active
+  };
+  // 先找到minder
+  const minder = await db.executeScalar(MinderSqls.GET_MINDER_BY_ID_STATUS, sqlParams);
+  if (!minder || minder.userId !== user.id) {
+    // 找不到或者所有权不对
+    return util.throwError('权限不足', 403);
+  }
+  // 注释的是从快照中查找的
+  // const sqlParams = { id: minderId, userId: user.id };
+  // const minder = await db.executeScalar(MinderSqls.GET_MINDER_LATEST_DETAIL, sqlParams);
   ctx.body = minder;
 };
 

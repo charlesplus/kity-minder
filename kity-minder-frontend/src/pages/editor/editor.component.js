@@ -31,6 +31,18 @@ export class EditorComponent {
     }
   };
 
+  saveMinderDataSilently = e => {
+    // e.preventDefault();
+    const path = this.$location.path();
+    if (path.startsWith('/minder/')) {
+      const data = JSON.stringify(this.minder.exportJson());
+      minderService.saveMinderData(this.minderId, data).then(() => {
+        // messageBox.msg('自动保存');
+        console.log("自动保存成功")
+      });
+    }
+  };
+
   async _initMinderData() {
     const cacheKey = `minder_${this.minderId}`;
     minderService.getMinderInfoById(this.minderId).then(minder => {
@@ -51,6 +63,8 @@ export class EditorComponent {
   $onInit() {
     Mousetrap.bindGlobal('ctrl+s', this.saveMinderData);
     this._initMinderData();
+    // 每30s自动保存一次
+    setInterval(this.saveMinderDataSilently, 5000);
   }
 
   $onDestroy() {

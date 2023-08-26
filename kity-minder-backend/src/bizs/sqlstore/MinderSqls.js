@@ -13,12 +13,17 @@ module.exports = {
   SET name = @name, lastUpdateDate = @lastUpdateDate
   WHERE id = @id AND userId = @userId;
   `,
+  UPDATE_MINDER_DATA: `
+  UPDATE mind
+  SET mindData = @mindData, lastUpdateDate = @lastUpdateDate, version = version + 1
+  WHERE id = @id AND userId = @userId and version = @version;
+  `,
   GET_MINDERS_BY_USER_STATUS: `
   SELECT * FROM mind
   WHERE userId = @userId AND status = @status;
   `,
   GET_MINDER_BY_ID_STATUS: `
-  SELECT id, userId, name, status FROM mind
+  SELECT id, userId, name, status, mindData, version FROM mind
   WHERE id = @id AND status = @status;
   `,
   GET_MINDER_LATEST_DETAIL: `
