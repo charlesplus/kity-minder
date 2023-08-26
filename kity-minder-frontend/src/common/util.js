@@ -51,5 +51,15 @@ export const util = {
         changeHandler.call(null, newVal, oldVal);
       }
     });
-  }
+  },
+  getDomain() {
+    let origin = window.location.origin
+    let origins = origin.split(':')
+    let lastSplit = origins[origins.length - 1]
+    if (!Number.isNaN(lastSplit)) {
+      // -1是还要去掉最后的:
+      origin = origin.substring(0, origin.length - lastSplit.length - 1)
+    }
+    return origin
+  },
 };

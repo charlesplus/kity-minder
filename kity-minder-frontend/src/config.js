@@ -1,3 +1,6 @@
+import './config';
+import { util } from './common';
+
 window.AppConf = {
-  apiHost: 'http://localhost:7001/api/v1/'
+  apiHost: util.getDomain() + ':7001/api/v1/',
 };
