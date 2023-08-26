@@ -63,8 +63,10 @@ export class EditorComponent {
   $onInit() {
     Mousetrap.bindGlobal('ctrl+s', this.saveMinderData);
     this._initMinderData();
-    // 每30s自动保存一次
-    setInterval(this.saveMinderDataSilently, 5000);
+    // 每5s自动保存一次
+    setInterval(() => {
+      this.saveMinderDataSilently()
+    }, 5000);
   }
 
   $onDestroy() {
