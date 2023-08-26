@@ -10,6 +10,7 @@ export class EditorComponent {
     this.$state = $state;
     this.minderId = this.$state.params.id || 0;
     this.cacheDataIntervalId = null;
+    this.autoSaveDataIntervalId = null;
   }
 
   editor = null;
@@ -64,12 +65,14 @@ export class EditorComponent {
     Mousetrap.bindGlobal('ctrl+s', this.saveMinderData);
     this._initMinderData();
     // 每5s自动保存一次
-    setInterval(() => {
-      this.saveMinderDataSilently()
+    this.autoSaveDataIntervalId = setInterval(() => {
+      this.saveMinderDataSilently();
     }, 5000);
   }
 
   $onDestroy() {
+    this.saveMinderDataSilently();
     clearInterval(this.cacheDataIntervalId);
+    clearInterval(this.autoSaveDataIntervalId);
   }
 }
