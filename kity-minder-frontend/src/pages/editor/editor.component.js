@@ -36,10 +36,17 @@ export class EditorComponent {
     // e.preventDefault();
     const path = this.$location.path();
     if (path.startsWith('/minder/')) {
-      const data = JSON.stringify(this.minder.exportJson());
-      minderService.saveMinderData(this.minderId, data).then(() => {
-        // messageBox.msg('自动保存');
-        console.log("自动保存成功")
+      const cacheKey = `minder_${this.minderId}`;
+      storage.get(cacheKey).then(cacheData => {
+        const data = JSON.stringify(this.minder.exportJson());
+        if (data !== cacheData) {
+          storage.set(cacheKey, data).then(r => {
+            minderService.saveMinderData(this.minderId, data).then(() => {
+              // messageBox.msg('自动保存');
+              console.log("自动保存成功")
+            });
+          })
+        }
       });
     }
   };
