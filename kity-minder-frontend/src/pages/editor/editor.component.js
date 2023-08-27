@@ -32,6 +32,18 @@ export class EditorComponent {
     }
   };
 
+  downloadKm = e => {
+    e.preventDefault();
+    const mindJson = this.minder.exportJson();
+    const jsonStr = (mindJson instanceof Object) ? JSON.stringify(mindJson, null, 4) : mindJson;
+    const url = window.URL || window.webkitURL || window;
+    const blob = new Blob([jsonStr]);
+    const saveLink = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+    saveLink.href = url.createObjectURL(blob);
+    saveLink.download = mindJson.root.data.text + '.km';
+    saveLink.click();
+  }
+
   saveMinderDataSilently = e => {
     // e.preventDefault();
     const path = this.$location.path();
@@ -80,6 +92,7 @@ export class EditorComponent {
 
   $onInit() {
     Mousetrap.bindGlobal('mod+s', this.saveMinderData);
+    Mousetrap.bindGlobal('mod+d', this.downloadKm);
     this._initMinderData();
     // 每5s自动保存一次
     this.autoSaveDataIntervalId = setInterval(() => {
