@@ -32,7 +32,7 @@ export class EditorComponent {
     }
   };
 
-  downloadKm = e => {
+  exportKm = e => {
     e.preventDefault();
     const mindJson = this.minder.exportJson();
     const jsonStr = (mindJson instanceof Object) ? JSON.stringify(mindJson, null, 4) : mindJson;
@@ -43,6 +43,26 @@ export class EditorComponent {
     saveLink.download = mindJson.root.data.text + '.km';
     saveLink.click();
   }
+
+exportPng = e => {
+  e.preventDefault();
+  const mindJson = this.minder.exportJson();
+  const png = this.minder.exportData('png');  //导图生成的图片数据
+  setTimeout(() => {
+    const img = png["fulfillValue"]["fulfillValue"];
+    const blobStr = atob(img.split(',')[1]);
+    let n = blobStr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = blobStr.charCodeAt(n);
+    }
+    const blob = new Blob([u8arr]); //bolb对象下载图片
+    const saveLink = document.createElement('a');
+    saveLink.href = URL.createObjectURL(blob);
+    saveLink.setAttribute('download', mindJson.root.data.text + '.' + 'png');
+    saveLink.click();
+  },1000);
+}
 
   saveMinderDataSilently = e => {
     // e.preventDefault();
@@ -92,7 +112,8 @@ export class EditorComponent {
 
   $onInit() {
     Mousetrap.bindGlobal('mod+s', this.saveMinderData);
-    Mousetrap.bindGlobal('mod+d', this.downloadKm);
+    Mousetrap.bindGlobal('mod+d', this.exportKm);
+    Mousetrap.bindGlobal('mod+p', this.exportPng);
     this._initMinderData();
     // 每5s自动保存一次
     this.autoSaveDataIntervalId = setInterval(() => {
