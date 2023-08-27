@@ -52,7 +52,6 @@ export class EditorComponent {
   };
 
   async _initMinderData() {
-    const cacheKey = `minder_${this.minderId}`;
     minderService.getMinderInfoById(this.minderId).then(minder => {
       try {
         const mindData = JSON.parse(minder.mindData);
@@ -65,6 +64,11 @@ export class EditorComponent {
         }
       } catch (e) {}
     });
+
+    // 初始化的时候保存一次, 避免更新
+    const cacheKey = `minder_${this.minderId}`;
+    storage.set(cacheKey, this.minder.exportJson());
+
     // const data = await storage.get(cacheKey);
     // if (data) {
     //   this.minder.importJson(data);
