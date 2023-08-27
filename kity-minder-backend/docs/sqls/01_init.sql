@@ -33,6 +33,19 @@ CREATE TABLE `mind_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 插入数据
-
 INSERT INTO `user`(`username`,`password`,`nickName`,`avatarUrl`,`createDate`)
 VALUES('admin', '09Rq6pzV+BjnUJTZqKcmCAyUPsM=', 'Admin', '', unix_timestamp() * 1000)
+
+-- 增加思维导图数据字段
+alter table mind
+    add mindData text null comment '思维导图数据';
+
+-- 增加版本字段
+alter table mind
+    add version bigint default 0 not null comment '版本号, 更新次数';
+
+-- 升级后, 迁移数据(从旧版本升级才需要)
+update mind m set mindData = (
+    select mindData from mind_version v where v.mindId = m.id order by v.id desc limit 1
+    )
+where m.mindData is null
