@@ -62,12 +62,12 @@ export class EditorComponent {
           newMinder.root.data.text = minder.name;
           this.minder.importJson(newMinder);
         }
+        // 初始化的时候保存一次, 避免更新
+        const cacheKey = `minder_${this.minderId}`;
+        storage.set(cacheKey, JSON.stringify(this.minder.exportJson()));
       } catch (e) {}
     });
 
-    // 初始化的时候保存一次, 避免更新
-    const cacheKey = `minder_${this.minderId}`;
-    storage.set(cacheKey, this.minder.exportJson());
 
     // const data = await storage.get(cacheKey);
     // if (data) {
