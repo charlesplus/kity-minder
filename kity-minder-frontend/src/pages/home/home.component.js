@@ -18,7 +18,7 @@ export class HomeComponent {
     title: '新建思维导图'
   };
   minderInfo = {
-    name: '',
+    name: '新建思维导图',
     description: ''
   };
 

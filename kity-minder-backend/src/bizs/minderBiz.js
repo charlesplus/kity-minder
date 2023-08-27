@@ -68,13 +68,16 @@ const updateMinderData = async ctx => {
     // 找不到或者所有权不对
     return util.throwError('权限不足', 403);
   }
+  // 名字同步中心主题
+  const newName = JSON.parse(body.data || '{"root": { "data": {}}}').root.data.text;
   // 更新mind.mindData
   const updateMindDataParams = {
     id: minderId,
     userId: user.id,
     lastUpdateDate: Date.now(),
     mindData: body.data || '',
-    version: minder.version
+    version: minder.version,
+    name: newName || minder.name,
   };
   const changeCount = await db.executeNonQuery(MinderSqls.UPDATE_MINDER_DATA, updateMindDataParams);
   if (!changeCount || changeCount !== 1) {
@@ -90,8 +93,8 @@ const updateMinderData = async ctx => {
     remark: '',
     mindData: body.data || ''
   };
-  // 每200次抽样保存一个快照
-  if (updateVersion % 200 === 0) {
+  // 每10次抽样保存一个快照
+  if (updateVersion % 10 === 0) {
     db.executeInsert(MinderSqls.INSERT_MINDER_VERSION, minderVersion);
   }
   ctx.status = 202;

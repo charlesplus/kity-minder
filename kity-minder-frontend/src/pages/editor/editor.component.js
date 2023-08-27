@@ -57,6 +57,12 @@ export class EditorComponent {
       try {
         const mindData = JSON.parse(minder.mindData);
         this.minder.importJson(mindData);
+        // 新建脑图, 中心节点需要跟数据库思维导图名字一致
+        if (!mindData) {
+          const newMinder = this.minder.exportJson();
+          newMinder.root.data.text = minder.name;
+          this.minder.importJson(newMinder);
+        }
       } catch (e) {}
     });
     // const data = await storage.get(cacheKey);

@@ -15,7 +15,7 @@ module.exports = {
   `,
   UPDATE_MINDER_DATA: `
   UPDATE mind
-  SET mindData = @mindData, lastUpdateDate = @lastUpdateDate, version = version + 1
+  SET mindData = @mindData, lastUpdateDate = @lastUpdateDate, name = @name, version = version + 1
   WHERE id = @id AND userId = @userId and version = @version;
   `,
   GET_MINDERS_BY_USER_STATUS: `
