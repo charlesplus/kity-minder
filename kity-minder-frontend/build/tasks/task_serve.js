@@ -9,7 +9,7 @@ module.exports = (gulp, params) => {
       server: {
         baseDir: params.distFolder
       },
-      port: 7001,
+      port: 7002,
       ghostMode: false,
       middleware: [historyFallback()]
     });
