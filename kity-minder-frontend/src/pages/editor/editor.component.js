@@ -1,5 +1,6 @@
 import { messageBox, storage } from '../../common';
 import { minderService } from '../../services';
+import {elt} from "codemirror/src/util/dom";
 
 export class EditorComponent {
   static selector = 'editorComponent';
@@ -15,6 +16,8 @@ export class EditorComponent {
 
   editor = null;
   minder = null;
+  nowFullscreenElement = null;
+
 
   initEditor(editor, minder) {
     this.editor = editor;
@@ -41,6 +44,27 @@ export class EditorComponent {
     const elem = document.documentElement;
     elem.requestFullscreen().then(r => {});
   };
+
+  toggleFullscreen = e => {
+    const minderEditorElement =  document.querySelector('.minder-editor');
+    const documentElement = document.documentElement;
+    if (document.fullscreenElement) {
+      const elem = this.nowFullscreenElement === minderEditorElement ? documentElement : minderEditorElement;
+      document.exitFullscreen().then(() => {
+        setTimeout(() => {
+          elem.requestFullscreen().catch(err => {
+            console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+          });
+        }, 100); // 延迟 100 毫秒后再进入全屏
+      }).catch(err => {
+        console.log(`Error attempting to exit full-screen mode: ${err.message}`);
+      });
+      this.nowFullscreenElement = elem;
+    } else {
+      minderEditorElement.requestFullscreen();
+      this.nowFullscreenElement = minderEditorElement;
+    }
+  }
 
   exportKm = e => {
     e.preventDefault();
@@ -126,6 +150,8 @@ exportPng = e => {
     Mousetrap.bindGlobal('mod+p', this.exportPng);
     Mousetrap.bindGlobal('alt+f', this.enterFullscreen);
     Mousetrap.bindGlobal('alt+g', this.enterUltraFullscreen);
+    Mousetrap.bindGlobal('alt+d', this.toggleFullscreen);
+
     this._initMinderData();
     // 每5s自动保存一次
     this.autoSaveDataIntervalId = setInterval(() => {
