@@ -31,6 +31,16 @@ export class EditorComponent {
       });
     }
   };
+  enterUltraFullscreen = e => {
+    e.preventDefault();
+    const elem = document.querySelector('.minder-editor');
+    elem.requestFullscreen().then(r => {});
+  };
+  enterFullscreen = e => {
+    e.preventDefault();
+    const elem = document.documentElement;
+    elem.requestFullscreen().then(r => {});
+  };
 
   exportKm = e => {
     e.preventDefault();
@@ -114,6 +124,8 @@ exportPng = e => {
     Mousetrap.bindGlobal('mod+s', this.saveMinderData);
     Mousetrap.bindGlobal('mod+d', this.exportKm);
     Mousetrap.bindGlobal('mod+p', this.exportPng);
+    Mousetrap.bindGlobal('alt+f', this.enterFullscreen);
+    Mousetrap.bindGlobal('alt+g', this.enterUltraFullscreen);
     this._initMinderData();
     // 每5s自动保存一次
     this.autoSaveDataIntervalId = setInterval(() => {
